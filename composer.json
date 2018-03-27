@@ -1,0 +1,22 @@
+{
+    "name": "devin/hangman_solver",
+    "description": "Solves hangman puzzles.",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Devin Gunay",
+            "email": "devingunay@gmail.com"
+        }
+    ],
+    "require": {},
+    "autoload": {
+        "psr-4": {
+            "HangmanSolver\\" : "src",
+            "HangmanSolver\\Test\\" : "test"
+        }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "7.0"
+    }
+}
