@@ -20,7 +20,7 @@ class WordTest extends TestCase
 			$hidden_word->guess($guess);
 		}
 
-		$this->assertEquals($expected, $hidden_word->show());
+		$this->assertEquals($expected, $hidden_word->showProgress());
 	}
 
 	/**
@@ -37,26 +37,26 @@ class WordTest extends TestCase
 	}
 
 	/**
-	 * Tests that multi-character guesses throw exceptions.
+	 * Tests that multi-character guesses work.
 	 * 
 	 * @dataProvider multiGuessProvider
 	 */
 	public function testMultipleGuessesAtOnce(
 		string $answer,
-		string $guess,
-		string $exception_class
+		string $expected,
+		string ...$guess
 	) {
 		$hidden_word = new Word($answer);
-		$this->expectException($exception_class);
-		$hidden_word->guess($guess);
+		$hidden_word->guess(...$guess);
+		$this->assertEquals($expected, $hidden_word->showProgress());
 	}
 
 	public function multiGuessProvider() {
 		return [
 			[
 				'Exemption',
-				'ep',
-				\UnexpectedValueException::class
+				'E?e?p????',
+				'e', 'p'
 			],
 		];
 	}

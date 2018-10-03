@@ -97,6 +97,7 @@ class CharacterTest extends TestCase
 	public function nonAsciiProvider() {
 		return [
 			['ü'],
+			['å'],
 		];
 	}
 

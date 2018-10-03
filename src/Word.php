@@ -7,20 +7,8 @@ namespace HangmanSolver;
  */
 class Word
 {
-	/**
-	 * Hidden word with internal structure like so:
-	 * 
-	 * [
-	 * 	0 => [
-	 * 		0 => 0 or 1 (hidden/revealed)
-	 * 		1 => char
-	 * 	],
-	 * ... 
-	 * ]
-	 * 
-	 * @var Character[] $word
-	 */
-	private $word;
+	/** @var Character[] $word */
+	private $word = [];
 
 	private const STATUS = 0;
 	private const CHAR   = 1;
@@ -30,42 +18,71 @@ class Word
 
 	public function __construct(string $word) 
 	{
-		$this->word = array();
 		foreach (str_split($word) as $character) {
-			$this->word[] = [self::HIDDEN, $character];
+			$this->word[] = new Character($character);
 		}
 	}
 
-	public function guess(string $guess) : bool
-	{
-		// TODO: allow for multiple guesses by casting $guess to array
-		if (strlen($guess) > 1) {
-			throw new \UnexpectedValueException("$guess must be one character");
+
+	/**
+	 * Makes a guess. A variadic number of  chars is considered multiple guesses 
+	 * at once. All of them have to be correct or it returns false.
+	 *
+	 * @param string ...$guesses
+	 * @return boolean
+	 */
+	public function guess(string ...$guesses) : bool {
+		$correct_guesses = [];
+		foreach ($guesses as $guess) {
+			$any_correct = false;
+			foreach ($this->word as $index => $char) {
+				if ($char->isHidden()) {
+					if ($char->guess($guess)) {
+						$correct_guesses[$index] = $guess;
+						$any_correct = true;
+					}
+				}
+			}
+
+			if (!$any_correct) { return false; }
 		}
 
-		$any_correct = false;
-		foreach ($this->word as $index => $char) {
-			if ($char[self::STATUS] == self::HIDDEN && !strcasecmp($char[self::CHAR], $guess)) {
-				$this->word[$index][self::STATUS] = self::REVEALED;
-				$any_correct = true;
+		// Make our correct guesses to mark them unhidden
+		foreach ($correct_guesses as $index => $guess) {
+			if (!$this->word[$index]->peek() === $guess) {
+				throw new \LogicException("Guess should always be correct here.");
 			}
 		}
 
-		return $any_correct;
+		return true;
 	}
 
-	public function show() : string
-	{
+	/**
+	 * Returns the word with hidden characters replaced by '?'.
+	 *
+	 * @return string
+	 */
+	public function showProgress() : string {
 		$full_word = '';
-		foreach ($this->word as $hidden_character) {
-			$full_word .= $hidden_character[self::STATUS] == self::REVEALED ? $hidden_character[1] : '?';
+		foreach ($this->word as $char) {
+			$full_word .= !$char->isHidden() ? $char->peek() : '?';
 		}
 
 		return $full_word;
 	}
 
-	public function solved() : bool
-	{
-		// TODO: true if all are revealed
+	/**
+	 * Returns true if all the letters are revealed.
+	 *
+	 * @return boolean
+	 */
+	public function solved() : bool {
+		foreach ($this->words as $char) {
+			if ($char->isHidden()) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 }
