@@ -5,7 +5,7 @@ namespace HangmanSolver;
 /**
  * Represents a word at varying stages of obfuscation/hidden-ness.
  */
-class HiddenWord
+class Word
 {
 	/**
 	 * Hidden word with internal structure like so:
@@ -18,7 +18,7 @@ class HiddenWord
 	 * ... 
 	 * ]
 	 * 
-	 * @var array $word
+	 * @var Character[] $word
 	 */
 	private $word;
 

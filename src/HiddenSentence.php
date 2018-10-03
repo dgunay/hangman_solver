@@ -3,7 +3,7 @@
 namespace HangmanSolver;
 
 /**
- * Contains HiddenWords
+ * Contains Words
  */
 class HiddenSentence
 {
